@@ -80,23 +80,27 @@ fun StatusBarTuner(
             val spaceBetween = (size.width - (defaultBar.width.toPx().roundToInt() * amountBar)) / amountBar
             val barBreakpoint = if(_barWidth < 5.dp || amountBar == 5) 3 else 4
 
-            val MIDDLE_PERCENT_DIVIDER = 0.7f
-            val SMALL_PERCENT_DIVIDER = 0.35f
+            val MIDDLE_PERCENT_DIVIDER = 0.55f
+            val SMALL_PERCENT_DIVIDER = 0.3f
+            val CURRENT_PERCENT_DIVIDER = 0.8f
 
             for(position in 0..amountBar) {
                 val isMiddle = position == ((amountBar / 2))
                 val bar = position % barBreakpoint + 1
-
-                var  currentBarHeight = if(isMiddle) size.height else when(bar) {
-                    barBreakpoint -> size.height * MIDDLE_PERCENT_DIVIDER
-                    else -> size.height * SMALL_PERCENT_DIVIDER
-                }
 
                 val amplitude = (range.end - range.start) / amountBar
                 val sliceFrequency = amplitude * position + range.start
 
                 val isBarSelected = _currentFrequency > sliceFrequency
                         && _currentFrequency < (sliceFrequency + amplitude)
+
+                val currentBarHeight =
+                    if(isMiddle) size.height
+                    else if(isBarSelected) size.height * CURRENT_PERCENT_DIVIDER
+                    else when(bar) { barBreakpoint -> size.height * MIDDLE_PERCENT_DIVIDER
+                        else -> size.height * SMALL_PERCENT_DIVIDER
+                    }
+
 
                 if(enabledCornerRadius) {
                     drawRoundRect(
